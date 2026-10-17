@@ -165,6 +165,14 @@ const textOf = (node) => {
   const flatH = textOf(H.render());
   ok('H: an idle observation does not invent 本轮', !/本轮/.test(flatH), flatH);
 
+  // --- I: an implausible learned rate never replaces the official table ---
+  const I = makeHarness({ provider: 'deepseek-account', model: 'deepseek-flash' });
+  I.state.running = true;
+  I.state.usage = { uncachedInputTokens: 3000, cacheReadTokens: 2200000, cacheWriteTokens: 0, outputTokens: 60000 };
+  global.localStorage.setItem('dsh-usage-cost:rate-per-token', JSON.stringify({ 'deepseek-flash': 1e-9 }));
+  const flatI = textOf(I.render());
+  ok('I: a contaminated learned rate is ignored for pricing', /估 ￥/.test(flatI) && !/⚠/.test(flatI), flatI);
+
   console.log('\n%d passed, %d failed', pass, fail);
   process.exit(fail === 0 ? 0 : 1);
 })();
