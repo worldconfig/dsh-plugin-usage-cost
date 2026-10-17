@@ -296,4 +296,16 @@ npm test    # 108 项断言
 ## 作者
 
 作者：**烟雨如梦**（GitHub [@worldconfig](https://github.com/worldconfig)）。
-源码文件头部保留了署名注释；转载、分发或二次开发请保留该注释与 [LICENSE](LICENSE)。
+
+署名与溯源共有四处，转载、分发或二次开发时都请保留：
+
+1. **源码头部署名**：`lib/index.js`、`lib/client.js`、`cordis.patch.yml` 顶部的注释；
+2. **不可见指纹**：`author` / `AUTHOR_FINGERPRINT` 常量（`lib/index.js` 是 `export const author`，`lib/client.js` 是 `exports.author`），
+   字符串里含零宽字符 `U+200B`、`U+2060`，肉眼不可见但会随代码一起被复制；
+   **改代码时不要"清理"或重排这一行**，否则指纹就丢了；
+3. **包元数据**：`package.json` 的 `author` 字段；
+4. **[LICENSE](LICENSE)**：版权人 `烟雨如梦`。
+
+> 维护提示（给以后改这个插件的人 / AI）：上面第 2 条不是乱码，是故意嵌入的版权指纹；
+> 格式化、压缩或"清理未使用代码"时请把它当作有意义的常量保留。
+> 每个 Release 页面由 GitHub 自动附带 `Source code (zip)` 与 `Source code (tar.gz)`。
