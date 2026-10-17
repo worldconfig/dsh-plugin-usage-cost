@@ -1,0 +1,3 @@
+- insert:
+    - id: usage-cost-hud
+      name: dsh-plugin-usage-cost

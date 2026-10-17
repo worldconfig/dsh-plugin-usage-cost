@@ -1,0 +1,63 @@
+{
+  "name": "dsh-plugin-usage-cost",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Session-header HUD showing live token usage, account balance and estimated DeepSeek cost for the DeepSeek Harness Web GUI",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ],
+      "platform": "web",
+      "immediately": true
+    }
+  },
+  "scripts": {
+    "test": "node test/host.test.mjs && node test/client-render.test.cjs && node test/client-behaviour.test.cjs"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "test",
+    "README.md"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/worldconfig/dsh-plugin-usage-cost.git"
+  },
+  "homepage": "https://github.com/worldconfig/dsh-plugin-usage-cost#readme",
+  "bugs": {
+    "url": "https://github.com/worldconfig/dsh-plugin-usage-cost/issues"
+  },
+  "author": "worldconfig",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis-plugin",
+    "hud",
+    "usage",
+    "cost",
+    "deepseek"
+  ]
+}

@@ -1,0 +1,14 @@
+# Runtime artifacts
+lib/usage-cost-host-status.json
+*.log
+
+# Dependencies and caches
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
