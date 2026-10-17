@@ -149,6 +149,22 @@ const textOf = (node) => {
   ok('F: all text elements off leaves an empty row', !/本轮/.test(flatF) && !/会话/.test(flatF) && !/余额/.test(flatF) && !/今日/.test(flatF) && !/运行中/.test(flatF), flatF);
   ok('F: the refresh and fold controls survive', /⟳/.test(flatF), flatF);
 
+  // --- G: a reload mid-turn recovers the turn start from storage ---
+  const G = makeHarness({ provider: 'deepseek-account', model: 'deepseek-flash' });
+  G.state.running = true;
+  G.state.usage = { uncachedInputTokens: 3000, cacheReadTokens: 2200000, cacheWriteTokens: 0, outputTokens: 60000 };
+  global.localStorage.setItem('dsh-usage-cost:turn-base', JSON.stringify({ sessionId: 'session-test', at: Date.now(), running: true, total: 2263000, turnStart: { uncachedInputTokens: 1000, cacheReadTokens: 1939000, cacheWriteTokens: 0, outputTokens: 60000 } }));
+  const flatG = textOf(G.render());
+  ok('G: a reload mid-turn recovers 本轮 from the stored turn start', /本轮 263k/.test(flatG), flatG);
+
+  // --- H: a stale idle observation is never reused as a turn start ---
+  const H = makeHarness({ provider: 'deepseek-account', model: 'deepseek-flash' });
+  H.state.running = true;
+  H.state.usage = { uncachedInputTokens: 3000, cacheReadTokens: 2200000, cacheWriteTokens: 0, outputTokens: 60000 };
+  global.localStorage.setItem('dsh-usage-cost:turn-base', JSON.stringify({ sessionId: 'session-test', at: Date.now(), running: false, total: 2000000 }));
+  const flatH = textOf(H.render());
+  ok('H: an idle observation does not invent 本轮', !/本轮/.test(flatH), flatH);
+
   console.log('\n%d passed, %d failed', pass, fail);
   process.exit(fail === 0 ? 0 : 1);
 })();

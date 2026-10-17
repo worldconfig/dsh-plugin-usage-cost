@@ -5,7 +5,7 @@
 
 - 宿主半侧（`lib/index.js`）：抓取并解析 DeepSeek 官方价目表，用同源路由转发给页面
 - 浏览器半侧（`lib/client.js`）：HUD、悬停浮层、价格刷新、峰谷判定、配色 / 位置 / 显示元素设置
-- 自带测试：`npm test`（108 项断言，离线跑 fixture）
+- 自带测试：`npm test`（110 项断言，离线跑 fixture）
 
 ## 长什么样
 
@@ -28,6 +28,10 @@
 | `⟳` | 重新抓取官网价目 | 宿主同源路由 |
 
 **没有本轮基线时不显示 `本轮`**：页面在一轮中途打开时不会谎报 `本轮 0`，等下一次真正的轮次开始才起算。
+
+刷新页面或切换座位时，会从 `localStorage["dsh-usage-cost:turn-base"]` 读回**上一实例记下的轮次起点**
+（同一会话、运行中、10 分钟内），所以后台刷新不会丢掉本轮；会话空闲时写入的观察会标记为非运行，
+绝不复用成下一轮的起点。
 
 行尾是一个 20×20 的箭头图标按钮（14px 线性 chevron，悬停有底色）：箭头朝上表示可折叠，朝下表示可展开；
 折叠状态记在 `localStorage["dsh-usage-cost:collapsed"]`，折叠时显示哪些元素由「显示」设置决定，
@@ -275,7 +279,7 @@ dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.3
 ## 测试
 
 ```bash
-npm test    # 108 项断言
+npm test    # 110 项断言
 ```
 
 | 套件 | 覆盖 |
