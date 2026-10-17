@@ -305,7 +305,7 @@ npm test    # 111 项断言
 
 ## 关键词
 
-DeepSeek Harness 插件、dsh 插件、会话用量、token 统计、费用估算、余额监控、今日消耗、本轮消耗、HUD、Cordis。
+DeepSeek Harness 插件、dsh 插件、会话用量、用量统计、token 统计、费用估算、费用统计、余额监控、今日消耗、本轮消耗、HUD、Cordis。
 
 ## 作者
 
