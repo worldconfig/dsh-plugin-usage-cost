@@ -303,6 +303,10 @@ npm test    # 111 项断言
 - 只统计主会话，subagent / workflow 子会话各自独立计量
 - 节假日清单需每年补一次（当前 `HOLIDAYS` 为空）
 
+## 关键词
+
+DeepSeek Harness 插件、dsh 插件、会话用量、token 统计、费用估算、余额监控、今日消耗、本轮消耗、HUD、Cordis。
+
 ## 作者
 
 作者：**烟雨如梦**（GitHub [@worldconfig](https://github.com/worldconfig)）。
