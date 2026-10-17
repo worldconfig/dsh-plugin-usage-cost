@@ -249,18 +249,18 @@ HUD 的三个盒子（行、胶囊、浮层）都显式声明了 `-webkit-app-re
 
 ### 从 GitHub 安装（发布版）
 
-仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，发布标签 `v1.2.1`。
+仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，发布标签 `v1.2.3`。
 
 在 Harness 里用 **git 规格**安装（不需要 npm 发布）：
 
 ```text
-plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.1
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.3
 ```
 
 或者用 CLI（需要先完全退出应用）：
 
 ```bash
-dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.1
+dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.3
 ```
 
 包是纯 JS、没有 `prepare`/构建脚本，pnpm 从 git 拉下来即可直接加载；装完刷新页面。
