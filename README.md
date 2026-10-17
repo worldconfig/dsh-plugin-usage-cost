@@ -247,6 +247,26 @@ HUD 的三个盒子（行、胶囊、浮层）都显式声明了 `-webkit-app-re
 
 卸载：用 `remove_bundle`（或设置 → 插件里禁用），它会同时清掉依赖和 bundle 选择。
 
+### 从 GitHub 安装（发布版）
+
+仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，发布标签 `v1.2.0`。
+
+在 Harness 里用 **git 规格**安装（不需要 npm 发布）：
+
+```text
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.0
+```
+
+或者用 CLI（需要先完全退出应用）：
+
+```bash
+dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.0
+```
+
+包是纯 JS、没有 `prepare`/构建脚本，pnpm 从 git 拉下来即可直接加载；装完刷新页面。
+如果同一 profile 里已经有指向本地目录的 `link:` 依赖，Windows 无法在应用运行时替换那个联接，
+需要先退出应用、删掉 `node_modules\dsh-plugin-usage-cost` 联接，再装 GitHub 版本。
+
 > ⚠️ 不要在 `profiles\desktop\cordis.patch.yml` 里手写这条 `insert`。
 > 桌面版是打包运行时，裸包名只查安装侧的模块解析表；手写的行不在表里，
 > 装载器只会静默跳过（表现为「配置合法、`apply` 从不执行」）。
