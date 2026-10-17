@@ -249,18 +249,18 @@ HUD 的三个盒子（行、胶囊、浮层）都显式声明了 `-webkit-app-re
 
 ### 从 GitHub 安装（发布版）
 
-仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，发布标签 `v1.2.0`。
+仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，发布标签 `v1.2.1`。
 
 在 Harness 里用 **git 规格**安装（不需要 npm 发布）：
 
 ```text
-plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.0
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.1
 ```
 
 或者用 CLI（需要先完全退出应用）：
 
 ```bash
-dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.0
+dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.1
 ```
 
 包是纯 JS、没有 `prepare`/构建脚本，pnpm 从 git 拉下来即可直接加载；装完刷新页面。
@@ -292,3 +292,8 @@ npm test    # 108 项断言
 - `今日` 同理：只累加本机运行期间看到的余额下降，关闭应用时在别处花的钱不计入；清站点数据会归零；充值只重设基准，不冲抵当日消耗
 - 只统计主会话，subagent / workflow 子会话各自独立计量
 - 节假日清单需每年补一次（当前 `HOLIDAYS` 为空）
+
+## 作者
+
+作者：**烟雨如梦**（GitHub [@worldconfig](https://github.com/worldconfig)）。
+源码文件头部保留了署名注释；转载、分发或二次开发请保留该注释与 [LICENSE](LICENSE)。

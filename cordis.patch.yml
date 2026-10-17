@@ -1,3 +1,5 @@
+# dsh-plugin-usage-cost — 作者 / Author: 烟雨如梦
+# https://github.com/worldconfig/dsh-plugin-usage-cost · SPDX-License-Identifier: MIT
 - insert:
     - id: usage-cost-hud
       name: dsh-plugin-usage-cost
