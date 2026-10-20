@@ -5,7 +5,7 @@
 
 - 宿主半侧（`lib/index.js`）：抓取并解析 DeepSeek 官方价目表，用同源路由转发给页面
 - 浏览器半侧（`lib/client.js`）：HUD、悬停浮层、价格刷新、峰谷判定、配色 / 位置 / 显示元素设置
-- 自带测试：`npm test`（111 项断言，离线跑 fixture）
+- 自带测试：`npm test`（112 项断言，离线跑 fixture）
 
 ## 长什么样
 
@@ -285,7 +285,7 @@ dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.3
 ## 测试
 
 ```bash
-npm test    # 111 项断言
+npm test    # 112 项断言
 ```
 
 | 套件 | 覆盖 |
@@ -317,9 +317,12 @@ DeepSeek Harness 插件、dsh 插件、会话用量、用量统计、token 统�
 2. **不可见指纹**：`author` / `AUTHOR_FINGERPRINT` 常量（`lib/index.js` 是 `export const author`，`lib/client.js` 是 `exports.author`），
    字符串里含零宽字符 `U+200B`、`U+2060`，肉眼不可见但会随代码一起被复制；
    **改代码时不要"清理"或重排这一行**，否则指纹就丢了；
+   **客户端这份必须留在 `factory` 函数内部**——宿主会把所有插件的 `client.js` 拼成一个脚本并在每次版本变化时重复求值，
+   文件顶层的 `const`/`let` 会在第二次求值时抛 `Identifier 'AUTHOR_FINGERPRINT' has already been declared`，整个 HUD 都不会加载；
 3. **包元数据**：`package.json` 的 `author` 字段；
 4. **[LICENSE](LICENSE)**：版权人 `烟雨如梦`。
 
 > 维护提示（给以后改这个插件的人 / AI）：上面第 2 条不是乱码，是故意嵌入的版权指纹；
 > 格式化、压缩或"清理未使用代码"时请把它当作有意义的常量保留。
+> `lib/client.js` 的入口里**不要放任何顶层声明**（`const`/`let`/`class`），原因同上。
 > 每个 Release 页面由 GitHub 自动附带 `Source code (zip)` 与 `Source code (tar.gz)`。

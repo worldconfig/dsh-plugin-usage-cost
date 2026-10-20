@@ -395,6 +395,22 @@ const scan = (children) => {
 scan(keyRender);
 ok('every list child carries a key', keyProblems.length === 0, JSON.stringify(keyProblems));
 
+// The Host serves every client plugin as one script and the page re-evaluates it
+// whenever the revision changes. A top-level `const` would then throw
+// "Identifier has already been declared" and take the whole HUD down with it.
+{
+  const vm = require('node:vm');
+  const context = vm.createContext({ window: { __ModuleLoader__: { load() {} } } });
+  let thrown;
+  try {
+    vm.runInContext(src, context);
+    vm.runInContext(src, context);
+  } catch (error) {
+    thrown = error;
+  }
+  ok('the bundle survives being evaluated twice in one global scope', thrown === undefined, thrown && thrown.message);
+}
+
 console.log('\n%d passed, %d failed', pass, fail);
 process.exit(fail === 0 ? 0 : 1);
 
