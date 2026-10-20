@@ -20,18 +20,20 @@ let calls = 0;
 globalThis.fetch = async () => { calls += 1; return { ok: true, status: 200, headers: { get: () => 'Sat, 17 Oct 2026 09:05:53 GMT' }, text: async () => html }; };
 
 const mount = (mod) => {
-  const holder = {};
-  mod.apply({ get: (name) => (name === "webServer" ? { register(spec) { holder.spec = spec; return () => {}; } } : undefined), effect(fn) { fn(); } });
+  const holder = { specs: {} };
+  mod.apply({ get: (name) => (name === "webServer" ? { register(spec) { holder.specs[spec.path] = spec; return () => {}; } } : undefined), effect(fn) { fn(); } });
   return holder;
 };
-const call = async (holder, url = '/usage-cost-hud/prices') => {
+const call = async (holder, url = '/usage-cost-hud/prices', specPath = String(url).split('?')[0]) => {
+  const spec = holder.specs[specPath];
   const out = { status: 0, headers: {}, body: '' };
-  await holder.spec.handler({ url, method: 'GET' }, { set statusCode(v) { out.status = v; }, get statusCode() { return out.status; }, setHeader(k, v) { out.headers[k] = v; }, end(b) { out.body = String(b ?? ''); } });
+  await spec.handler({ url, method: 'GET' }, { set statusCode(v) { out.status = v; }, get statusCode() { return out.status; }, setHeader(k, v) { out.headers[k] = v; }, end(b) { out.body = String(b ?? ''); } });
   return out;
 };
 
 const holder = mount({ apply });
-ok('route registered exact path', holder.spec?.kind === 'exact' && holder.spec?.path === '/usage-cost-hud/prices', JSON.stringify(holder.spec));
+ok('price route registered exact path', holder.specs['/usage-cost-hud/prices']?.kind === 'exact', JSON.stringify(holder.specs['/usage-cost-hud/prices']));
+ok('update route registered exact path', holder.specs['/usage-cost-hud/update-check']?.kind === 'exact', JSON.stringify(holder.specs['/usage-cost-hud/update-check']));
 const r1 = await call(holder);
 ok('handler 200', r1.status === 200, String(r1.status));
 const payload = JSON.parse(r1.body);
@@ -39,7 +41,7 @@ ok('payload ok + 2 models', payload.ok === true && Object.keys(payload.models).l
 ok('payload carries versions', payload.ok === true && payload.versions?.['deepseek-v4-pro'] === 'DeepSeek-V4-Pro-0813', JSON.stringify(payload.versions));
 await call(holder);
 ok('success cached (1 fetch / 2 calls)', calls === 1, 'calls=' + calls);
-ok('off-path 404', (await call(holder, '/other')).status === 404);
+ok('off-path 404', (await call(holder, '/other', '/usage-cost-hud/prices')).status === 404);
 
 // single-flight: startup probe + a click must share one request
 calls = 0;
@@ -75,6 +77,35 @@ const holderT = mount(toMod);
 const f3 = JSON.parse((await call(holderT)).body);
 ok('timeout reason is human', f3.ok === false && /超时/.test(f3.reason), JSON.stringify(f3));
 Date.now = realNow;
+
+// update route: success, caching and failure
+let releaseCalls = 0;
+globalThis.fetch = async (url) => {
+  if (String(url).includes('api.github.com')) {
+    releaseCalls += 1;
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ tag_name: 'v9.9.9', html_url: 'https://example.test/release', published_at: '2026-10-21T00:00:00Z' })
+    };
+  }
+  return { ok: true, status: 200, headers: { get: () => null }, text: async () => html };
+};
+const updateMod = (await import(new URL('../lib/index.js?u=1', import.meta.url).href));
+const holderU = mount(updateMod);
+const u1 = JSON.parse((await call(holderU, '/usage-cost-hud/update-check')).body);
+ok('update payload has latest + current', u1.ok === true && u1.latest === '9.9.9' && typeof u1.current === 'string', JSON.stringify(u1));
+ok('update carries the release url', u1.url === 'https://example.test/release');
+await call(holderU, '/usage-cost-hud/update-check');
+ok('update cached (1 release fetch / 2 calls)', releaseCalls === 1, 'releaseCalls=' + releaseCalls);
+
+globalThis.fetch = async (url) => {
+  if (String(url).includes('api.github.com')) return { ok: false, status: 404, json: async () => ({ message: 'Not Found' }) };
+  return { ok: true, status: 200, headers: { get: () => null }, text: async () => html };
+};
+const holderUF = mount((await import(new URL('../lib/index.js?u=2', import.meta.url).href)));
+const uf = JSON.parse((await call(holderUF, '/usage-cost-hud/update-check')).body);
+ok('update failure is reported as data', uf.ok === false && /404/.test(uf.reason), JSON.stringify(uf));
 
 console.log('\n%d passed, %d failed', pass, fail);
 process.exit(fail === 0 ? 0 : 1);

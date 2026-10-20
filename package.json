@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-usage-cost",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "private": true,
   "description": "Session-header HUD showing live token usage, account balance and estimated DeepSeek cost for the DeepSeek Harness Web GUI",
   "type": "module",

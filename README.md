@@ -5,7 +5,7 @@
 
 - 宿主半侧（`lib/index.js`）：抓取并解析 DeepSeek 官方价目表，用同源路由转发给页面
 - 浏览器半侧（`lib/client.js`）：HUD、悬停浮层、价格刷新、峰谷判定、配色 / 位置 / 显示元素设置
-- 自带测试：`npm test`（112 项断言，离线跑 fixture）
+- 自带测试：`npm test`（118 项断言，离线跑 fixture）
 
 ## 长什么样
 
@@ -39,16 +39,21 @@
 
 ## 悬停浮层
 
-悬停 HUD 弹出自绘浮层（不是系统 tooltip），五组信息：
+悬停 HUD 弹出自绘浮层（不是系统 tooltip），六组信息：
 
 - **会话**：完整模型版本名（`DeepSeek-V4.1-Flash-1017`）、模型 id、路由、推理等级、计价时段、会话 token
 - **TOKEN 分项**：未缓存输入 / 缓存读取 / 缓存写入 / 输出，每行带当前单价（`336,957 × ￥2.00/M`）
 - **金额**：本轮估价、会话估价、本次消耗（余额差值）、今日消耗（余额累计）、实测均价
 - **账户**：余额、充值、赠金
 - **价目**：来源、核对日期、偏差、未收录模型、刷新失败原因
+- **版本**：当前版本、自动检查 GitHub 最新 Release；有新版本时显示 `vX.Y.Z 可用`（点开 Release 页）和「复制命令」
 
 浮层不透明、右对齐，**朝空间大的那一侧展开**（顶部座位、靠上的胶囊向下；输入框下、靠下的胶囊向上），
 并按那一侧剩余空间限制高度、超出滚动；从 HUD 移入浮层不会关闭（140 ms 缓关）。
+
+「版本」组在浮层打开时自动查一次（每台机器每小时最多一次）：宿主的 `/usage-cost-hud/update-check`
+去 GitHub 取最新 Release，结果缓存 10 分钟；失败时显示「检查失败 · 重试」，不弹窗、不打扰。
+发现新版本时点 `vX.Y.Z 可用` 打开 Release 页面，点「复制命令」把安装命令放进剪贴板。
 
 模型全名来自官网「模型版本」行（如 `模型版本 | DeepSeek-V4.1-Flash-1017 | DeepSeek-V4-Pro-0813`），
 抓取成功后自动更新；未抓到时用内置副本兜底，因此 `deepseek-flash` 也能显示成 `DeepSeek-V4.1-Flash-1017`。
@@ -259,18 +264,18 @@ HUD 的三个盒子（行、胶囊、浮层）都显式声明了 `-webkit-app-re
 
 ### 从 GitHub 安装（发布版）
 
-仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，最新发布标签 `v1.2.6`。
+仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，最新发布标签 `v1.3.0`。
 
 在 Harness 里用 **git 规格**安装（不需要 npm 发布）：
 
 ```text
-plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.6
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.3.0
 ```
 
 或者用 CLI（需要先完全退出应用）：
 
 ```bash
-dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.6
+dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.3.0
 ```
 
 包是纯 JS、没有 `prepare`/构建脚本，pnpm 从 git 拉下来即可直接加载；装完刷新页面。
@@ -280,10 +285,10 @@ dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.6
 ### 更新
 
 插件**不会自动更新**：装的时候用的是哪个标签，就一直是哪个版本。要升级，
-把上面的安装命令**再执行一次**、把标签换成新版本即可（例如 `#v1.2.6`）：
+把上面的安装命令**再执行一次**、把标签换成新版本即可（例如 `#v1.3.0`）：
 
 ```text
-plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.6
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.3.0
 ```
 
 - 不需要重装 DSH，也不需要重下整个应用；仓库只有约 100 KB，pnpm 重新拉取这个小仓库即可；
@@ -299,7 +304,7 @@ plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost
 ## 测试
 
 ```bash
-npm test    # 112 项断言
+npm test    # 118 项断言
 ```
 
 | 套件 | 覆盖 |

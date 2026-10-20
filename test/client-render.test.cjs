@@ -207,6 +207,7 @@ ok('panel shows model and provider', /deepseek-flash/.test(afterOpen) && /deepse
 ok('panel shows full model version', /DeepSeek-V4\.1-Flash-1017/.test(afterOpen), afterOpen.slice(0, 200));
 ok('panel shows reasoning effort', /推理/.test(afterOpen) && /High/.test(afterOpen), afterOpen.slice(0, 200));
 ok('panel leaks no undefined/NaN', !/undefined|NaN/.test(afterOpen), afterOpen.slice(0, 200));
+ok('panel exposes the version/update row', /版本/.test(afterOpen) && /当前/.test(afterOpen) && /检查更新|检查中|检查失败/.test(afterOpen), afterOpen.slice(0, 200));
 
 // ---- palette switch: follow-theme -> pure black ----
 const findButton = (node, label) => {
