@@ -286,7 +286,7 @@ dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.6
 plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.6
 ```
 
-- 不需要重装 DSH，也不需要重下整个应用；仓库只有约 100 KB，pnpm 只拉新标签对应的差异；
+- 不需要重装 DSH，也不需要重下整个应用；仓库只有约 100 KB，pnpm 重新拉取这个小仓库即可；
 - 装完刷新页面即可生效，宿主半侧改动才需要完全退出重开；
 - 想始终跟最新代码，可以把标签换成 `#main`，但每次更新仍需重新执行一次安装（DSH 没有插件自动更新）；
 - 生产使用建议钉具体标签，避免 `main` 上的未发布改动。
