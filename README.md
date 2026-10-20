@@ -259,23 +259,37 @@ HUD 的三个盒子（行、胶囊、浮层）都显式声明了 `-webkit-app-re
 
 ### 从 GitHub 安装（发布版）
 
-仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，发布标签 `v1.2.3`。
+仓库 <https://github.com/worldconfig/dsh-plugin-usage-cost>，最新发布标签 `v1.2.6`。
 
 在 Harness 里用 **git 规格**安装（不需要 npm 发布）：
 
 ```text
-plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.3
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.6
 ```
 
 或者用 CLI（需要先完全退出应用）：
 
 ```bash
-dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.3
+dsh plugin --profile desktop add github:worldconfig/dsh-plugin-usage-cost#v1.2.6
 ```
 
 包是纯 JS、没有 `prepare`/构建脚本，pnpm 从 git 拉下来即可直接加载；装完刷新页面。
 如果同一 profile 里已经有指向本地目录的 `link:` 依赖，Windows 无法在应用运行时替换那个联接，
 需要先退出应用、删掉 `node_modules\dsh-plugin-usage-cost` 联接，再装 GitHub 版本。
+
+### 更新
+
+插件**不会自动更新**：装的时候用的是哪个标签，就一直是哪个版本。要升级，
+把上面的安装命令**再执行一次**、把标签换成新版本即可（例如 `#v1.2.6`）：
+
+```text
+plugin_manager install_bundle   target: github:worldconfig/dsh-plugin-usage-cost#v1.2.6
+```
+
+- 不需要重装 DSH，也不需要重下整个应用；仓库只有约 100 KB，pnpm 只拉新标签对应的差异；
+- 装完刷新页面即可生效，宿主半侧改动才需要完全退出重开；
+- 想始终跟最新代码，可以把标签换成 `#main`，但每次更新仍需重新执行一次安装（DSH 没有插件自动更新）；
+- 生产使用建议钉具体标签，避免 `main` 上的未发布改动。
 
 > ⚠️ 不要在 `profiles\desktop\cordis.patch.yml` 里手写这条 `insert`。
 > 桌面版是打包运行时，裸包名只查安装侧的模块解析表；手写的行不在表里，
